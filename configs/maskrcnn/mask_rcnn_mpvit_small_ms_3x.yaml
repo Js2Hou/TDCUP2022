@@ -1,0 +1,18 @@
+_BASE_: "../Base-RCNN-FPN.yaml"
+MODEL:
+  MASK_ON: False
+  WEIGHTS: "pretrained/mask_rcnn_mpvit_small_ms_3x.pth"
+  MPVIT:
+    NAME: "mpvit_small"
+    DROP_PATH: 0.2
+SOLVER:
+  STEPS: (210000, 250000)
+  MAX_ITER: 1000
+INPUT:
+  CROP:
+    ENABLED: True
+    TYPE: "absolute_range"
+    SIZE: (384, 600)
+AUG:
+  DETR: False
+OUTPUT_DIR: "output/mask_rcnn_mpvit_small_ms_3x"

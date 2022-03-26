@@ -1,0 +1,7 @@
+##ignore this file##
+__pycache__/
+output/
+pretrained/
+datasets/
+history/
+core
