@@ -17,7 +17,7 @@ import torch
 
 from typing import Any, Dict, List, Set
 
-from detectron2.data import build_detection_train_loader
+from detectron2.data import build_detection_train_loader, build_detection_test_loader
 from detectron2.checkpoint import DetectionCheckpointer
 from detectron2.config import get_cfg
 from detectron2.engine import DefaultTrainer, default_argument_parser, default_setup, launch
@@ -28,12 +28,6 @@ from mpvit import add_mpvit_config
 from mpvit import DetrDatasetMapper
 
 class Trainer(DefaultTrainer):
-    # @classmethod
-    # def build_evaluator(cls, cfg, dataset_name, output_folder=None):
-    #     if output_folder is None:
-    #         output_folder = os.path.join(cfg.OUTPUT_DIR, "inference")
-    #     return COCOEvaluator(dataset_name, output_dir=output_folder)
-
     @classmethod
     def build_train_loader(cls, cfg):
         if cfg.AUG.DETR:
@@ -41,6 +35,20 @@ class Trainer(DefaultTrainer):
         else:
             mapper = None
         return build_detection_train_loader(cfg, mapper=mapper)
+
+    @classmethod
+    def build_test_loader(cls, cfg, dataset_name):
+        if cfg.AUG.DETR:
+            mapper = DetrDatasetMapper(cfg, is_train=False)
+        else:
+            mapper = None
+        return build_detection_test_loader(cfg, dataset_name, mapper=mapper)
+
+    @classmethod
+    def build_evaluator(cls, cfg, dataset_name, output_folder=None):
+        if output_folder is None:
+            output_folder = os.path.join(cfg.OUTPUT_DIR, "inference")
+        return COCOEvaluator(dataset_name, output_dir=output_folder)
 
     @classmethod
     def build_optimizer(cls, cfg, model):
@@ -91,6 +99,9 @@ class Trainer(DefaultTrainer):
             optimizer = maybe_add_gradient_clipping(cfg, optimizer)
         return optimizer
 
+    # @classmethod
+    # def build_lr_scheduler(cls, cfg, optimizer):
+    #     return torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer, 10, T_mult=2)
 
 def setup(args):
     """
@@ -101,6 +112,7 @@ def setup(args):
     add_mpvit_config(cfg)
     cfg.merge_from_file(args.config_file)
     cfg.merge_from_list(args.opts)
+    cfg.OUTPUT_DIR = os.path.join(cfg.OUTPUT_DIR, args.tag)
     cfg.freeze()
     default_setup(cfg, args)
     return cfg
@@ -125,6 +137,7 @@ def main(args):
 if __name__ == "__main__":
     parser = default_argument_parser()
     parser.add_argument("--debug", action="store_true", help="enable debug mode")
+    parser.add_argument("--tag", default='default', type=str, help="experimen tag")
     args = parser.parse_args()
     print("Command Line Args:", args)
 

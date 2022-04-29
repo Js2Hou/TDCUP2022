@@ -17,9 +17,10 @@ MODEL:
     IOU_THRESHOLDS: [0.4, 0.5]
     IOU_LABELS: [0, -1, 1]
     SMOOTH_L1_LOSS_BETA: 0.0
+    NUM_CLASSES: 28
 DATASETS:
-  TRAIN: ("coco_2017_train",)
-  TEST: ("coco_2017_val",)
+  TRAIN: ("pest_train",)
+  TEST: ("pest_val",)
 SOLVER:
   OPTIMIZER: "ADAMW"
   BACKBONE_MULTIPLIER: 1.0

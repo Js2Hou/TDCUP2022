@@ -15,9 +15,9 @@ from detectron2.data.datasets import register_coco_instances
 
 __all__ = ["DetrDatasetMapper"]
 
-
-register_coco_instances("pest_train", {}, "datasets/coco/annotations/instances_train2017.json", "datasets/coco/train2017")
-register_coco_instances("pest_val", {}, "datasets/coco/annotations/instances_val2017.json", "datasets/coco/val2017")
+dataset_name = 'coco_mix'
+register_coco_instances("pest_train", {}, f"datasets/{dataset_name}/annotations/instances_train2017.json", f"datasets/{dataset_name}/train2017")
+register_coco_instances("pest_val", {}, f"datasets/{dataset_name}/annotations/instances_val2017.json", f"datasets/{dataset_name}/val2017")
 
 
 def build_transform_gen(cfg, is_train):
@@ -40,7 +40,10 @@ def build_transform_gen(cfg, is_train):
     logger = logging.getLogger(__name__)
     tfm_gens = []
     if is_train:
-        tfm_gens.append(T.RandomFlip())
+        tfm_gens.append(T.RandomFlip(horizontal=True, vertical=False))
+        tfm_gens.append(T.RandomFlip(horizontal=False, vertical=True))
+        tfm_gens.append(T.RandomRotation([0, 360]))
+        tfm_gens.append(T.RandomContrast(0.5, 1.5))
     tfm_gens.append(T.ResizeShortestEdge(min_size, max_size, sample_style))
     if is_train:
         logger.info("TransformGens used in training: " + str(tfm_gens))

@@ -1,18 +1,26 @@
 _BASE_: "../Base-RCNN-FPN.yaml"
 MODEL:
-  MASK_ON: True
-  WEIGHTS: "https://dl.dropbox.com/s/wiqpwiw35k7t6z7/mpvit_base_d2.pth"
+  MASK_ON: False
+  WEIGHTS: "/projects/TDCUP2022/pretrained/mpvit_base_d2.pth"
   MPVIT:
     NAME: "mpvit_base"
     DROP_PATH: 0.4
+
 SOLVER:
+  OPTIMIZER: "ADAMW"
   STEPS: (210000, 250000)
   MAX_ITER: 270000
+  LR_SCHEDULER_NAME: "WarmupCosineLR"
+  BASE_LR: 0.001
+  IMS_PER_BATCH: 2
+  CHECKPOINT_PERIOD: 50
+  WARMUP_FACTOR: 0.01
+  WARMUP_ITERS: 50
 INPUT:
   CROP:
     ENABLED: True
-    TYPE: "absolute_range"
-    SIZE: (384, 600)
+    TYPE: "relative_range"
+    SIZE: (0.9, 0.9)
 AUG:
   DETR: True
 OUTPUT_DIR: "output/mask_rcnn_mpvit_base_ms_3x"
