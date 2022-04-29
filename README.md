@@ -7,6 +7,31 @@
 
 项目关键词：Detectron2、Mask R-CNN、MPViT、Transformer
 
+## 项目结构
+```
+TDCUP2022/
+|-- datasets/
+|   |-- coco/
+|   |
+|   |-- to_coco.py
+|
+|-- mpvit/
+|   |-- __init__.py
+|   |-- backbone.py
+|   |-- config.py
+|   |-- dataset_mapper.py
+|   |-- mpvit.py
+|
+|-- scripts/
+|   |-- train.sh  # entrance for training
+|   |-- evaluate.sh
+|
+|-- train_net.py
+|-- predict.ipynb
+|-- requirements.txt
+|-- README
+```
+
 ## 参考文献
 [1] He K, Gkioxari G, Dollár P, et al. Mask r-cnn[C]//Proceedings of the IEEE international conference on computer vision. 2017: 2961-2969.
 
