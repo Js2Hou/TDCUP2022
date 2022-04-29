@@ -2,6 +2,6 @@
 __pycache__/
 output/
 pretrained/
-datasets/
+datasets/*/
 history/
 core
